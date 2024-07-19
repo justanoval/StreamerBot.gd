@@ -47,6 +47,9 @@ func unsubscribe(events: Dictionary):
 func get_events():
 	return await self.make_request("GetEvents")
 
+func get_actions():
+	return await self.make_request("GetActions")
+
 func do_action(action: Dictionary, args: Dictionary = {}) -> Dictionary:
 	return await self.make_request("DoAction", {"action": action, "args": args})
 
