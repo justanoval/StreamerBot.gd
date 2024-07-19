@@ -88,7 +88,7 @@ print(await self.get_events())
 ```
 I recommend using a [JSON formatter](https://json.fans/) to read it all.
 
-# Other Functions
+# Other functions
 You can [learn more about the websocket requests here](https://docs.streamer.bot/api/servers/websocket/requests).
 ## `test_credits`
 Fill credits system with test data for testing.
