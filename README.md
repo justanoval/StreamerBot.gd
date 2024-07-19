@@ -6,7 +6,7 @@ This addon was made by [justan oval](https://justanoval.com/): I make interactiv
 I've made many utilities along my development journey to make this easier for myself. I figured I can make these tools available for others that aspire to make interactive streams as well.
 
 # Installation
-1. Download the latest release in [the releases tab](https://github.com/justanoval/StreamerBot.gd/releases/tag/release).
+1. Download the latest release in [the releases tab](https://github.com/justanoval/StreamerBot.gd/releases).
 2. Put the unzipped files into `res://addons/streamer-bot/`
 
 # Getting started
