@@ -48,7 +48,7 @@ func _on_packet_received(packet: PackedByteArray):
 func _get_address(host: String, port: int):
 	return "ws://%s:%s/" % [ host, port ]
 
-func connect_to_websocket(host: String = "127.0.0.1", port: int = 8080, auto_reconnect: bool = true) -> Error:
+func connect_to_websocket(port: int = 8080, host: String = "127.0.0.1", auto_reconnect: bool = true) -> Error:
 	self.auto_reconnect = auto_reconnect
 	
 	return socket.connect_to_url(self._get_address(host, port))
