@@ -1,4 +1,4 @@
-An addon to interact with Streamer.bot through Godot.
+An addon for Godot 4 to interact with Streamer.bot.
 
 # About
 This addon was made by [justan oval](https://justanoval.com/): I make interactive streams over on [my Twitch](https://www.twitch.tv/justanoval), and everything is made in **Godot Engine**!
