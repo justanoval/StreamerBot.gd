@@ -10,7 +10,7 @@ var socket = WebSocketPeer.new()
 var is_connected: bool = false
 var auto_reconnect: bool = false
 
-func _process(_delta):
+func _process(_delta) -> void:
 	socket.poll()
 	
 	var state = socket.get_ready_state()
@@ -38,14 +38,14 @@ func _process(_delta):
 		if self.auto_reconnect:
 			connect_to_websocket()
 
-func _on_packet_received(packet: PackedByteArray):
+func _on_packet_received(packet: PackedByteArray) -> void:
 	var packet_string = packet.get_string_from_utf8()
 	var payload = JSON.parse_string(packet_string)
 	
 	if payload:
 		payload_received.emit(payload)
 
-func _get_address(host: String, port: int):
+func _get_address(host: String, port: int) -> String:
 	return "ws://%s:%s/" % [ host, port ]
 
 func connect_to_websocket(port: int = 8080, host: String = "127.0.0.1", auto_reconnect: bool = true) -> Error:
@@ -53,5 +53,5 @@ func connect_to_websocket(port: int = 8080, host: String = "127.0.0.1", auto_rec
 	
 	return socket.connect_to_url(self._get_address(host, port))
 
-func send_payload(payload: Dictionary):
+func send_payload(payload: Dictionary) -> void:
 	self.socket.send_text(JSON.stringify(payload))
