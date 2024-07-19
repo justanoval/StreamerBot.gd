@@ -10,7 +10,12 @@ I've made many utilities along my development journey to make this easier for my
 2. Put the unzipped files into `res://addons/streamer-bot/`
 
 # Getting started
-Create a script that extends `StreamerBot`, and either attach it to a `Node` or [make it autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html).
+First, make sure your Websocket Server is on. You can enable this in the `Servers/Clients` tab under `Websocket Server` (not `Websocket Servers`). It should look like this:
+![image](https://github.com/user-attachments/assets/61ba3be5-88f3-4f84-9cec-1b40b59c2564)
+
+You can change the address and port if you'd ilke to.
+
+Then, create a script that extends `StreamerBot`, and either attach it to a `Node` or [make it autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html).
 ```gdscript
 extends StreamerBot
 
@@ -22,6 +27,17 @@ func _ready():
     print("Connected!")
   
   await connected
+```
+
+If you changed your address and port in the Streamer.bot settings, you can reflect that like so:
+```gdscript
+self.connect_to_websocket(8081)
+self.connect_to_websocket(8081, "127.0.0.1")
+```
+
+You can also disable `auto_reconnect` if you don't want to reconnect to the websocket server every time it closes (I've found it may often close at random):
+```gdscript
+self.connect_to_websocket(8081, "127.0.0.1", false)
 ```
 
 # Subscribing to events
