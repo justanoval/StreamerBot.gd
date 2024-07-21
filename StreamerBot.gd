@@ -54,10 +54,10 @@ func do_action(action: Dictionary, args: Dictionary = {}) -> Dictionary:
 	return await self.make_request("DoAction", {"action": action, "args": args})
 
 func do_action_from_name(action_name: String, args: Dictionary = {}) -> Dictionary:
-	return await self.do_action({"name": action_name})
+	return await self.do_action({"name": action_name}, args)
 
 func do_action_from_id(action_id: String, args: Dictionary = {}) -> Dictionary:
-	return await self.do_action({"id": action_id})
+	return await self.do_action({"id": action_id}, args)
 
 func get_broadcaster() -> Dictionary:
 	return await self.make_request("GetBroadcaster")
