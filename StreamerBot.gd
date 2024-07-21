@@ -1,6 +1,12 @@
 extends WebSocketConnection
 class_name StreamerBot
 
+signal custom_event(payload: String)
+signal command_executed(payload: String)
+
+var subbed_to_custom: bool = false
+var subbed_to_commands: bool = false
+
 func get_unique_id() -> String:
 	var date_string = str(Time.get_unix_time_from_system())
 	return date_string.sha256_text()
@@ -40,6 +46,29 @@ func subscribe(events: Dictionary, callable: Callable) -> Dictionary:
 	)
 	
 	return await self.make_request("Subscribe", {"events": events})
+
+func subscribe_to_custom(event: String, callable: Callable):
+	if not subbed_to_custom:
+		subscribe({"general": ["Custom"]}, func(response):
+			custom_event.emit(response.data)
+		)
+		subbed_to_custom = true
+	
+	custom_event.connect(func(payload):
+		if payload.event == event:
+			callable.call(payload)
+	)
+
+func subscribe_to_command(commands: Array[String], callable: Callable):
+	if not subbed_to_commands:
+		subscribe({"command": ["Triggered"]}, func(response):
+			command_executed.emit(response.data)
+		)
+	
+	command_executed.connect(func(payload):
+		if commands.has(payload.command):
+			callable.call(payload)
+	)
 
 func unsubscribe(events: Dictionary) -> Dictionary:
 	return await self.make_request("UnSubscribe", {"events": events})
