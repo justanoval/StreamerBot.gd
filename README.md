@@ -7,7 +7,8 @@ I've made many utilities along my development journey to make this easier for my
 
 # Installation
 1. Download the latest release in [the releases tab](https://github.com/justanoval/StreamerBot.gd/releases).
-2. Put the unzipped files into `res://addons/streamer-bot/`
+2. Unzip the files.
+3. Put the files from `/addons/streamer_bot` into `res://addons/streamer_bot/`, or simply drag the folder into `res://`.
 
 # Getting started
 First, make sure your Websocket Server is on. You can enable this in the `Servers/Clients` tab under `Websocket Server` (not `Websocket Servers`). It should look like this:
@@ -15,52 +16,56 @@ First, make sure your Websocket Server is on. You can enable this in the `Server
 
 You can change the address and port if you'd ilke to.
 
-Then, create a script that extends `StreamerBot`, and either attach it to a `Node` or [make it autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html).
-```gdscript
-extends StreamerBot
+Then, in Godot Engine, go to your Project Settings under the Streamer Bot section:
+![image](https://github.com/user-attachments/assets/1e4b471c-80e3-4fdc-a905-06796d13dd4b)
 
-func _ready():
-  var err = self.connect_to_websocket()
-  if err != OK:
-    push_error("Websocket could not connect. Error: " % err)
-  else:
-    print("Connected!")
-  
-  await connected
-```
+There, you can configure your settings. They should match up to your Streamer.bot host and port.
 
-If you changed your address and port in the Streamer.bot settings, you can reflect that like so:
-```gdscript
-self.connect_to_websocket(8081)
-self.connect_to_websocket(8081, "127.0.0.1")
-```
-
-You can also disable `auto_reconnect` if you don't want to reconnect to the websocket server every time it closes (I've found it may often close at random):
-```gdscript
-self.connect_to_websocket(8081, "127.0.0.1", false)
-```
+It is recommended against disabling `auto_reconnect`. Oftentimes the websocket may close at random, and this will have it reboot with no issues.
 
 # Subscribing to events
-To subscribe to an event, you can use the following function:
+StreamerBot.gd adds three new autoloads:
+- `StreamerBot`
+- `Twitch`
+- `YouTube`
+
+All Twitch and YouTube events are ran through signals. To connect, all you need to do is connect it like you would any other signal:
+```gdscript
+func _ready() -> void:
+  Twitch.chat_message.connect(self._on_chat_message)
+
+func _on_chat_message(payload: Dictionary) -> void:
+  print(payload)
+```
+
+The primary caveat right now is that **you will have to print out the payload** and go through it yourself. They're much too large and dynamic, so I have yet to create their own objects for them, but that will come soon.
+
+For now, you can use my favorite JSON reader, [json.fans](https://json.fans/).
+
+To subscribe to any other event not from Twitch or YouTube, you can do it through `StreamerBot`. However, unlike using `Twitch` or `YouTube`, you have to first await the `StreamerBot.connected` signal. 
+This is due to the websocket periodic resetting I had mentioned last time--if you subscribe to it in the `_ready` function, then when the websocket reconnects, the subscribe events will not. The `Twitch` and `YouTube` singletons do this already, so you only have 
+to worry about it with others.
+
+You can subscribe to an event similarily to using a signal:
+```gdscript
+func _ready() -> void:
+  StreamerBot.connected.connect(self._on_streamer_bot_connected)
+
+func _on_streamer_bot_connected() -> void:
+  StreamerBot.subscribe({"twitch":["ChatMessage"]}, self._on_chat_message)
+
+func _on_chat_message(payload: Dictionary) -> void:
+  print(payload)
+```
+
+Below is the formart:
 ```gdscript
 subscribe({"<event category>":["<event name>", "<event name>"]}, self.callback)
 ```
-For example:
-```gdscript
-subscribe({"twitch":["ChatMessage"]}, self._on_chat_message)
-```
-Then, `on_chat_message` would be:
-```gdscript
-func _on_chat_message(response: Dictionary):
-  var message_object = response.data.message
-	print("%s: %s" % [ message_object.channel, message_object.message ])
-```
-This would print the message like:
-> justanoval: hello!
 
 Each action comes with a response, so if you'd like to check if it actually subscribes, you can do that like so:
 ```gdscript
-var response = await subscribe({"twitch":["ChatMessage"]}, self._on_chat_message)
+var response = await StreamerBot.subscribe({"twitch":["ChatMessage"]}, self._on_chat_message)
 if response.status == "ok":
   print("Subscribed")
 else response.status == "error":
@@ -70,23 +75,23 @@ else response.status == "error":
 ## Finding available events
 The best way to find available events is by using the `get_events()` function
 ```gdscript
-print(await self.get_events())
+print(await StreamerBot.get_events())
 ```
 This will give a rather _massive_ list. I'd recommend using a [JSON formatter](https://json.fans/) to read them all.
 
 # Unsubscribing from events
 To unsubscribe from events it's pretty much the same premise, minus the callback.
 ```gdscript
-unsubscribe({"twitch":["ChatMessage"]})
+StreamerBot.unsubscribe({"twitch":["ChatMessage"]})
 ```
 
 # Executing actions
 There are **four** ways to execute actions.
 ```gdscript
-do_action({"id":"<id>"}
-do_action({"name":"<name>"}
-do_action_from_name("<name>")
-do_action_from_id("<id>")
+StreamerBot.do_action({"id":"<id>"}
+StreamerBot.do_action({"name":"<name>"}
+StreamerBot.do_action_from_name("<name>")
+StreamerBot.do_action_from_id("<id>")
 ```
 
 To get an action's ID, just right-click it in Streamer.bot and click "Copy Action Id". Though doing it with its name I think is more convenient.
@@ -94,13 +99,13 @@ To get an action's ID, just right-click it in Streamer.bot and click "Copy Actio
 ## Executing actions with arguments
 To execute an action with arguments, you can use a dictionary:
 ```gdscript
-do_action_from_name("Test", {"key1":"value1","key2":"value2"})
+StreamerBot.do_action_from_name("Test", {"key1":"value1","key2":"value2"})
 ```
 
 ## Finding available actions
 Same premise as finding available events, using the `get_actions()` function.
 ```gdscript
-print(await self.get_events())
+print(await StreamerBot.get_actions()())
 ```
 I recommend using a [JSON formatter](https://json.fans/) to read it all.
 
@@ -109,20 +114,20 @@ You can [learn more about the websocket requests here](https://docs.streamer.bot
 ## `test_credits`
 Fill credits system with test data for testing.
 ```gdscript
-await test_credits()
+await StreamerBot.test_credits()
 ```
 ## `clear_credits`
 Reset the current credits system data.
 ```gdscript
-await clear_credits()
+await StreamerBot.clear_credits()
 ```
 ## `get_info`
 Fetch information about the connected Streamer.bot instance.
 ```gdscript
-var info = await get_info()
+var info = await StreamerBot.get_info()
 ```
 ## `get_active_viewers`
 Fetch a list of all active viewers for connected Twitch or YouTube accounts.
 ```gdscript
-var active_viewers = await get_active_viewers()
+var active_viewers = await StreamerBot.get_active_viewers()
 ```

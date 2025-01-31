@@ -1,0 +1,30 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="StreamerBot"
+run/main_scene="res://examples/twitch_chat/twitch_chat.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
+
+[autoload]
+
+StreamerBot="*res://addons/streamer_bot/streamer_bot.gd"
+Twitch="*res://addons/streamer_bot/twitch/twitch.gd"
+YouTube="*res://addons/streamer_bot/youtube/youtube.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/streamer_bot/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

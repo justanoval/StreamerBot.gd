@@ -1,0 +1,5 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Ignoring the streamer_bot cache folder
+examples/twitch_chat/cache/

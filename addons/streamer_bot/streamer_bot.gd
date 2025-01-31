@@ -1,11 +1,32 @@
 extends WebSocketConnection
-class_name StreamerBot
 
 signal custom_event(payload: String)
 signal command_executed(payload: String)
 
 var subbed_to_custom: bool = false
 var subbed_to_commands: bool = false
+
+func _ready() -> void:
+	self.connected.connect(_on_connected)
+	
+	self.host = ProjectSettings.get_setting(
+		"streamer_bot/websocket/host",
+		"127.0.0.1")
+	
+	self.port = ProjectSettings.get_setting(
+		"streamer_bot/websocket/port",
+		8080)
+	
+	self.auto_reconnect = ProjectSettings.get_setting(
+		"streamer_bot/websocket/auto_reconnect",
+		true)
+	
+	var err = self.connect_to_websocket()
+	if err != OK:
+		push_error("Websocket could not connect. Error: " % err)
+
+func _on_connected():
+	print("Streamer.bot connected!")
 
 func get_unique_id() -> String:
 	var date_string = str(Time.get_unix_time_from_system())
@@ -23,8 +44,8 @@ func make_request(request: String, args: Dictionary = {}) -> Dictionary:
 	
 	self.send_payload(payload)
 	
-	var response = await payload_received
-	while not response.id == id:
+	var response: Dictionary = await payload_received
+	while not response.has("id") or not response.id == id:
 		response = await payload_received
 	
 	return response
