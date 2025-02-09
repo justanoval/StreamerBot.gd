@@ -1,0 +1,122 @@
+[gd_scene load_steps=11 format=3 uid="uid://ddklmjbykh8b8"]
+
+[ext_resource type="Theme" uid="uid://bkjx5pxb4ojo" path="res://examples/multi_chat/multi_chat.tres" id="1_y5qm8"]
+[ext_resource type="Script" path="res://common/ui/auto_scroll_container.gd" id="2_yh7fu"]
+[ext_resource type="Script" path="res://common/ui/max_load_box_container.gd" id="3_uhgd3"]
+[ext_resource type="Script" path="res://common/ui/stream/twitch/twitch_chat_listener.gd" id="4_upgyo"]
+[ext_resource type="Script" path="res://common/ui/stream/youtube/youtube_chat_listener.gd" id="5_c6pfn"]
+[ext_resource type="Script" path="res://common/ui/stream/twitch/twitch_chat_line_edit.gd" id="6_wl6ny"]
+[ext_resource type="Script" path="res://common/ui/line_edit_submit_button.gd" id="7_t4l8k"]
+[ext_resource type="Script" path="res://common/ui/stream/youtube/youtube_chat_line_edit.gd" id="8_1c76w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tt0r2"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wuu74"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+
+[node name="MultiChat" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_y5qm8")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_y5qm8")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tt0r2")
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Chat" type="VBoxContainer" parent="PanelContainer/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_y5qm8")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/PanelContainer/Chat"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_y5qm8")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_wuu74")
+script = ExtResource("2_yh7fu")
+
+[node name="ChatMessageContainer" type="BoxContainer" parent="PanelContainer/PanelContainer/Chat/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_y5qm8")
+vertical = true
+script = ExtResource("3_uhgd3")
+
+[node name="TwitchChatListener" type="Node" parent="PanelContainer/PanelContainer/Chat/ScrollContainer/ChatMessageContainer" node_paths=PackedStringArray("chat_container")]
+script = ExtResource("4_upgyo")
+chat_container = NodePath("..")
+
+[node name="YouTubeChatListener" type="Node" parent="PanelContainer/PanelContainer/Chat/ScrollContainer/ChatMessageContainer" node_paths=PackedStringArray("chat_container")]
+script = ExtResource("5_c6pfn")
+chat_container = NodePath("..")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/PanelContainer/Chat"]
+layout_mode = 2
+theme = ExtResource("1_y5qm8")
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="TabContainer" type="TabContainer" parent="PanelContainer/PanelContainer/Chat/MarginContainer"]
+layout_mode = 2
+current_tab = 0
+
+[node name="Twitch" type="HBoxContainer" parent="PanelContainer/PanelContainer/Chat/MarginContainer/TabContainer"]
+layout_mode = 2
+theme = ExtResource("1_y5qm8")
+metadata/_tab_index = 0
+
+[node name="TwitchChatLineEdit" type="LineEdit" parent="PanelContainer/PanelContainer/Chat/MarginContainer/TabContainer/Twitch"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_y5qm8")
+script = ExtResource("6_wl6ny")
+
+[node name="SubmitButton" type="Button" parent="PanelContainer/PanelContainer/Chat/MarginContainer/TabContainer/Twitch" node_paths=PackedStringArray("line_edit")]
+layout_mode = 2
+theme = ExtResource("1_y5qm8")
+text = "Send"
+script = ExtResource("7_t4l8k")
+line_edit = NodePath("../TwitchChatLineEdit")
+
+[node name="YouTube" type="HBoxContainer" parent="PanelContainer/PanelContainer/Chat/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("1_y5qm8")
+metadata/_tab_index = 1
+
+[node name="YouTubeChatLineEdit" type="LineEdit" parent="PanelContainer/PanelContainer/Chat/MarginContainer/TabContainer/YouTube"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_y5qm8")
+script = ExtResource("8_1c76w")
+
+[node name="SubmitButton" type="Button" parent="PanelContainer/PanelContainer/Chat/MarginContainer/TabContainer/YouTube" node_paths=PackedStringArray("line_edit")]
+layout_mode = 2
+theme = ExtResource("1_y5qm8")
+text = "Send"
+script = ExtResource("7_t4l8k")
+line_edit = NodePath("../YouTubeChatLineEdit")

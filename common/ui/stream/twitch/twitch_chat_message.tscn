@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://bf6dt6vrfml4y"]
+
+[ext_resource type="PackedScene" uid="uid://bxcfwxer55igk" path="res://common/ui/stream/stream_chat_message.tscn" id="1_4lugx"]
+[ext_resource type="Script" path="res://common/ui/stream/twitch/twitch_chat_message.gd" id="2_80yij"]
+[ext_resource type="Texture2D" uid="uid://de58xlvagbmvy" path="res://assets/twitch.png" id="3_e4gkx"]
+
+[node name="TwitchChatMessage" instance=ExtResource("1_4lugx")]
+script = ExtResource("2_80yij")
+
+[node name="TextureRect" parent="HBoxContainer" index="0"]
+texture = ExtResource("3_e4gkx")

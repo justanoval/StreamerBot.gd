@@ -29,9 +29,6 @@ signal better_ttvemote_removed(payload: Dictionary)
 signal poll_closed(payload: Dictionary)
 
 func _ready() -> void:
-	StreamerBot.connected.connect(_on_streamer_bot_connected)
-
-func _on_streamer_bot_connected() -> void:
 	print("YouTube connected!")
 	StreamerBot.subscribe({"youtube": ["BroadcastStarted"]}, func(payload): broadcast_started.emit(payload))
 	StreamerBot.subscribe({"youtube": ["BroadcastEnded"]}, func(payload): broadcast_ended.emit(payload))

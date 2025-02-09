@@ -140,9 +140,6 @@ signal shared_chat_user_untimedout(payload: Dictionary)
 signal shared_chat_message_deleted(payload: Dictionary)
 
 func _ready() -> void:
-	StreamerBot.connected.connect(_on_streamer_bot_connected)
-
-func _on_streamer_bot_connected() -> void:
 	print("Twitch connected!")
 	StreamerBot.subscribe({"twitch": ["Follow"]}, func(payload): follow.emit(payload))
 	StreamerBot.subscribe({"twitch": ["Cheer"]}, func(payload): cheer.emit(payload))

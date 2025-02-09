@@ -131,3 +131,5 @@ Fetch a list of all active viewers for connected Twitch or YouTube accounts.
 ```gdscript
 var active_viewers = await StreamerBot.get_active_viewers()
 ```
+# Known Issues
+- There will be errors when downloading images. This isn't an actual issue, it just attempts every possible file type. Should be fixed soon.

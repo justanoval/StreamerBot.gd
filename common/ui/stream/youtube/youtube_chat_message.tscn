@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2kbr2gtq0lht"]
+
+[ext_resource type="PackedScene" uid="uid://bxcfwxer55igk" path="res://common/ui/stream/stream_chat_message.tscn" id="1_wfu8j"]
+[ext_resource type="Script" path="res://common/ui/stream/youtube/youtube_chat_message.gd" id="2_0htyy"]
+
+[node name="YouTubeChatMessage" instance=ExtResource("1_wfu8j")]
+script = ExtResource("2_0htyy")
