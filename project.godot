@@ -13,6 +13,7 @@ config_version=5
 config/name="StreamerBot"
 run/main_scene="res://examples/twitch_chat/twitch_chat.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
+config/icon="res://icon.png"
 
 [autoload]
 
